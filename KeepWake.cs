@@ -9,6 +9,7 @@ namespace Keepwake
     {
         private NotifyIcon notifyIcon;
         private ContextMenu contextMenu;
+        private MenuItem menuItemStart;
         private MenuItem menuItemExit;
         private System.ComponentModel.IContainer components;
 
@@ -32,7 +33,7 @@ namespace Keepwake
         static void Main(string[] args)
         {
             //Initialize program as running in the background with the task bar icon as only interface
-            KeepWake program = new KeepWake();
+            _ = new KeepWake();
             Application.Run();
             Console.ReadLine();
         }
@@ -48,6 +49,13 @@ namespace Keepwake
             this.components = new System.ComponentModel.Container();
             this.contextMenu = new ContextMenu();
 
+            //Create menu item for toggling "start with Windows"
+            this.menuItemStart = new MenuItem();
+            this.menuItemStart.Text = "Start with Windows";
+            this.menuItemStart.Checked = true;
+            this.menuItemStart.Click += new EventHandler(this.ToggleStartWithWindows);
+
+
             //Create menu item for closing program
             this.menuItemExit = new MenuItem();
             this.menuItemExit.Text = "Exit";
@@ -55,7 +63,10 @@ namespace Keepwake
 
             //Add all menu items to context menu
             this.contextMenu.MenuItems.AddRange(
-                new MenuItem[] { this.menuItemExit });
+                new MenuItem[] { 
+                    this.menuItemStart,
+                    this.menuItemExit 
+                });
 
             //Create clickable taskbar icon
             this.notifyIcon = new NotifyIcon(this.components);
@@ -73,6 +84,10 @@ namespace Keepwake
         private void ToggleMode(object Sender, EventArgs e)
         {
             //Called by clicking the task bar icon
+            
+            //Only handle left clicks of task bar icon
+            if (((MouseEventArgs) e).Button != MouseButtons.Left) return;
+
             if (this.state == State.AllowSleep)
             {
                 this.state = State.KeepWake;
@@ -89,6 +104,11 @@ namespace Keepwake
             }
 
             notifyIcon.Text = String.Format("KeepWake: {0}", stateCaptions[(int)this.state]);
+        }
+
+        private void ToggleStartWithWindows(object Sender, EventArgs e)
+        {
+            menuItemStart.Checked = !menuItemStart.Checked;
         }
 
         private void Exit(object Sender, EventArgs e)
