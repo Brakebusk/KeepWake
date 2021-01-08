@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace Keepwake
 {
-    class Program
+    class KeepWake
     {
         private NotifyIcon notifyIcon;
         private ContextMenu contextMenu;
@@ -32,11 +32,11 @@ namespace Keepwake
         static void Main(string[] args)
         {
             //Initialize program as running in the background with the task bar icon as only interface
-            Program program = new Program();
+            KeepWake program = new KeepWake();
             Application.Run();
             Console.ReadLine();
         }
-        Program()
+        KeepWake()
         {
             wakerThread.Start();
             mre.Reset();
