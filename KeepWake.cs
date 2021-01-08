@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.Drawing;
 using System.Threading;
+using Microsoft.Win32;
 
 namespace Keepwake
 {
@@ -30,6 +31,8 @@ namespace Keepwake
         };
         private State state = State.AllowSleep;
 
+        RegistryKey registryStartup = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+
         static void Main(string[] args)
         {
             //Initialize program as running in the background with the task bar icon as only interface
@@ -52,7 +55,9 @@ namespace Keepwake
             //Create menu item for toggling "start with Windows"
             this.menuItemStart = new MenuItem();
             this.menuItemStart.Text = "Start with Windows";
-            this.menuItemStart.Checked = true;
+            //Check registry for startup entry
+            if (registryStartup.GetValue("Keepwake") != null)
+                this.menuItemStart.Checked = true;
             this.menuItemStart.Click += new EventHandler(this.ToggleStartWithWindows);
 
 
@@ -109,6 +114,14 @@ namespace Keepwake
         private void ToggleStartWithWindows(object Sender, EventArgs e)
         {
             menuItemStart.Checked = !menuItemStart.Checked;
+
+            if (menuItemStart.Checked)
+            {
+                registryStartup.SetValue("Keepwake", Application.ExecutablePath);
+            } else
+            {
+                registryStartup.DeleteValue("Keepwake", false);
+            }
         }
 
         private void Exit(object Sender, EventArgs e)
