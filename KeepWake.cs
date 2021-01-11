@@ -38,7 +38,6 @@ namespace Keepwake
             //Initialize program as running in the background with the task bar icon as only interface
             _ = new KeepWake();
             Application.Run();
-            Console.ReadLine();
         }
         KeepWake()
         {
@@ -75,7 +74,7 @@ namespace Keepwake
 
             //Create clickable taskbar icon
             this.notifyIcon = new NotifyIcon(this.components);
-            this.notifyIcon.Icon = new Icon("empty.ico");
+            this.notifyIcon.Icon = Resources.empty;
 
             this.notifyIcon.ContextMenu = this.contextMenu;
 
@@ -96,14 +95,14 @@ namespace Keepwake
             if (this.state == State.AllowSleep)
             {
                 this.state = State.KeepWake;
-                this.notifyIcon.Icon = new Icon("filled.ico");
+                this.notifyIcon.Icon = Resources.filled;
                 Console.WriteLine("Staring waker");
                 mre.Set();
             }
             else
             {
                 this.state = State.AllowSleep;
-                this.notifyIcon.Icon = new Icon("empty.ico");
+                this.notifyIcon.Icon = Resources.empty;
                 Console.WriteLine("Suspending waker");
                 mre.Reset();
             }
